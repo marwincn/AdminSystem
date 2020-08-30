@@ -12,8 +12,7 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.axios = axios;
 // 设置axios默认参数 
-axios.defaults.baseURL = 'http://114.116.77.118:8888';
-//axios.defaults.baseURL = 'http://localhost:8888';
+axios.defaults.baseURL = 'http://localhost:8888';
 // 开启cookie
 axios.defaults.withCredentials=true;
 // 默认发送表单数据
