@@ -1,4 +1,4 @@
-package cn.marwin.adminsystem.bean;
+package cn.marwin.adminsystem.config;
 
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;

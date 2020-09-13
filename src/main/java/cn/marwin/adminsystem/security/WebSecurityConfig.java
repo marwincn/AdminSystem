@@ -6,7 +6,7 @@ import cn.marwin.adminsystem.repository.security.UserDAO;
 import cn.marwin.adminsystem.security.authenticate.MyUserDetailsService;
 import cn.marwin.adminsystem.security.authorize.MyFilterSecurityInterceptor;
 import cn.marwin.adminsystem.facade.UserFacade;
-import cn.marwin.adminsystem.facade.Result;
+import cn.marwin.adminsystem.facade.HttpResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         PrintWriter out = httpServletResponse.getWriter();
                         String username = httpServletRequest.getParameter("username");
                         User user = userDAO.findByUsername(username).orElse(null);
-                        JSONObject result = JSONObject.fromObject(new Result(Result.SUCCESS, "登录成功！", new UserFacade(user)));
+                        JSONObject result = JSONObject.fromObject(new HttpResult(HttpResult.SUCCESS, "登录成功！", new UserFacade(user)));
                         out.write(result.toString());
                         out.flush();
                         out.close();
@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
                         PrintWriter out = httpServletResponse.getWriter();
-                        JSONObject result = JSONObject.fromObject(new Result(Result.ERROR, "登录失败，账号或密码错误！"));
+                        JSONObject result = JSONObject.fromObject(new HttpResult(HttpResult.ERROR, "登录失败，账号或密码错误！"));
                         out.write(result.toString());
                         out.flush();
                         out.close();

@@ -1,4 +1,4 @@
-package cn.marwin.adminsystem.bean;
+package cn.marwin.adminsystem.config;
 
 
 import javax.imageio.ImageIO;

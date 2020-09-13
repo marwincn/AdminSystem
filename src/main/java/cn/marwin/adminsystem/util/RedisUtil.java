@@ -6,9 +6,9 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisUtil {
     //服务器IP地址
-    private static String ADDR = "114.116.77.118";
+    private static String ADDR = "";
     //端口
-    private static int PORT = 6379;
+    private static int PORT = 0;
     //密码
     private static String AUTH = "";
     //连接实例的最大连接数，默认值为8

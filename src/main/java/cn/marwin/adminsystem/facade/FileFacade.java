@@ -7,8 +7,13 @@ public class FileFacade {
     private long size;
 
     public FileFacade(File file) {
-        this.name = file.getName();
-        this.size = file.length();
+        if (file.exists()) {
+            this.name = file.getName();
+            this.size = file.length();
+        } else {
+            this.name = "Nonexistent file";
+            this.size = 0;
+        }
     }
 
     public String getName() {

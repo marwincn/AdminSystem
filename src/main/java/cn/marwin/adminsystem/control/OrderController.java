@@ -7,7 +7,7 @@ import cn.marwin.adminsystem.entity.security.User;
 import cn.marwin.adminsystem.service.platform.ItemService;
 import cn.marwin.adminsystem.service.platform.OrderService;
 import cn.marwin.adminsystem.util.UserUtil;
-import cn.marwin.adminsystem.facade.Result;
+import cn.marwin.adminsystem.facade.HttpResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,20 +27,20 @@ public class OrderController {
 
     @ApiOperation(value = "生成订单(uid,iid必须传入）")
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public Result create(Candidate candidate) {
+    public HttpResult create(Candidate candidate) {
         User user = UserUtil.getLoginUser();
         if (user == null) {
-            return new Result(Result.ERROR, "请先登录！");
+            return new HttpResult(HttpResult.ERROR, "请先登录！");
         }
         Item item = itemService.findById(candidate.getIid());
         if (item == null) {
-            return new Result(Result.ERROR, "该项目不存在！");
+            return new HttpResult(HttpResult.ERROR, "该项目不存在！");
         }
         if (item.getState() == 0) {
-            return new Result(Result.ERROR, "下架项目无法生产订单！");
+            return new HttpResult(HttpResult.ERROR, "下架项目无法生产订单！");
         }
         if (item.getAid() != user.getId()) {
-            return new Result(Result.ERROR, "您没有权限！");
+            return new HttpResult(HttpResult.ERROR, "您没有权限！");
         }
         Order order = new Order();
         order.setIid(item.getId());
@@ -51,34 +51,34 @@ public class OrderController {
         try {
             newOrder = orderService.add(order);
         } catch (Exception e) {
-            return new Result(Result.ERROR, e.getMessage());
+            return new HttpResult(HttpResult.ERROR, e.getMessage());
         }
-        return new Result(Result.SUCCESS, "创建订单成功！", newOrder.getId());
+        return new HttpResult(HttpResult.SUCCESS, "创建订单成功！", newOrder.getId());
     }
 
     @ApiOperation(value = "列出自己接的订单")
     @RequestMapping(value = "listMyJoined", method = RequestMethod.GET)
-    public Result listMyJoined() {
+    public HttpResult listMyJoined() {
         User user = UserUtil.getLoginUser();
         if (user == null) {
-            return new Result(Result.ERROR, "请先登录！");
+            return new HttpResult(HttpResult.ERROR, "请先登录！");
         }
-        return new Result(Result.SUCCESS, "获取个人接的订单成功", orderService.findByUid(user.getId()));
+        return new HttpResult(HttpResult.SUCCESS, "获取个人接的订单成功", orderService.findByUid(user.getId()));
     }
 
     @ApiOperation(value = "列出自己创建的订单")
     @RequestMapping(value = "listMyCreated", method = RequestMethod.GET)
-    public Result listMyCreated() {
+    public HttpResult listMyCreated() {
         User user = UserUtil.getLoginUser();
         if (user == null) {
-            return new Result(Result.ERROR, "请先登录！");
+            return new HttpResult(HttpResult.ERROR, "请先登录！");
         }
-        return new Result(Result.SUCCESS, "获取个人创建订单成功", orderService.findByAid(user.getId()));
+        return new HttpResult(HttpResult.SUCCESS, "获取个人创建订单成功", orderService.findByAid(user.getId()));
     }
 
     @ApiOperation(value = "获取最近生成的订单")
     @RequestMapping(value = "getNewOrders", method = RequestMethod.GET)
-    public Result getNewOrders(Integer size) {
+    public HttpResult getNewOrders(Integer size) {
         List<Order> orders = new ArrayList<>();
         for (Order order: orderService.findNewOrders(size)) {
             Order simpleOrder = new Order();
@@ -89,6 +89,6 @@ public class OrderController {
             simpleOrder.setCreateTime(order.getCreateTime());
             orders.add(simpleOrder);
         }
-        return new Result(Result.SUCCESS, "获取最近生成的订单成功", orders);
+        return new HttpResult(HttpResult.SUCCESS, "获取最近生成的订单成功", orders);
     }
 }

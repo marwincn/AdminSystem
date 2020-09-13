@@ -1,25 +1,25 @@
 package cn.marwin.adminsystem.facade;
 
-public class Result {
+public class HttpResult {
     private int status;
     private String message;
     private Object data;
     public final static int SUCCESS = 1;
     public final static int ERROR = 0;
 
-    public Result() {}
+    public HttpResult() {}
 
-    public Result(int status, String message) {
+    public HttpResult(int status, String message) {
         this.status = status;
         this.message = message;
     }
 
-    public Result(int status, Object data) {
+    public HttpResult(int status, Object data) {
         this.status = status;
         this.data = data;
     }
 
-    public Result(int status, String message, Object data) {
+    public HttpResult(int status, String message, Object data) {
         this.status = status;
         this.message = message;
         this.data = data;
