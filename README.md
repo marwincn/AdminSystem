@@ -8,13 +8,17 @@
 
 > 目前项目提供了全部Java后台代码和使用Vue写的管理页前端，无前台展示页面。
 
+![管理页面截图](http://image.marwin.cn/uPic/screencapture-localhost-8080-2020-10-01-19_49_34.png)
+
 ## 二、安装环境
 
 1. 使用`java -version`确定已安装Java 8以上环境。
 
 2. 安装Mysql Server，创建一个名为`admin_system`的数据库，导入`resource/sql/admin_system.sql`文件完成数据库的配置。在mysql命令行中执行：
     ```shell script
-    > source  path    # sql文件的绝对路径
+    use admin_system
+   
+    source  path   # sql文件的绝对路径
     ```
 
 3. 修改`application-dev.properties`中的数据库账号密码为自己的账号密码，`file.location`的值是文件上传路径，指定一个自己电脑上的路径。
