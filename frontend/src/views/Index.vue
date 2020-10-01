@@ -35,7 +35,7 @@
         >
           <el-submenu index="1">
             <template slot="title">
-              <i class="el-icon-setting"></i>用户管理
+              <i class="el-icon-user"></i>用户管理
             </template>
             <el-menu-item index="user">用户列表</el-menu-item>
             <el-menu-item index="role">角色列表</el-menu-item>

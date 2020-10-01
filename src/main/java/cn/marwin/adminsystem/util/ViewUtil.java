@@ -1,10 +1,16 @@
 package cn.marwin.adminsystem.util;
 
-import redis.clients.jedis.Jedis;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class ViewUtil {
+    /**
+     * 记录浏览信息
+     * 为了简化系统需要替换成另一种方式
+     *
+     * @param type blog或item
+     * @param id 对应的id
+     * @param request 这次访问的request
+     */
     public static void logView(String type, Integer id, HttpServletRequest request) {
         int uid = 0;
         if (UserUtil.getLoginUser() != null) {
@@ -17,33 +23,18 @@ public class ViewUtil {
         } else {
             clientAddr = request.getRemoteAddr() + ":" + request.getRemotePort();
         }
-
-        Jedis jedis = null;
-        try {
-            jedis = RedisUtil.getJedis();
-            // 记录浏览量
-            // 如果key不存在，则创建zset并执行zadd。如果member不存在，则执行zadd
-            jedis.zincrby(type + "viewcount", 1, "" + id);
-
-            // 记录浏览历史
-            jedis.rpush(type + "view:" + id, uid + " @ " + clientAddr + " @ " + TimeUtil.getCurrentTime());
-        } finally {
-            RedisUtil.returnResource(jedis);
-        }
+        System.out.printf("%s viewed %s:%s @ %s, %s\n", uid, type, id, clientAddr, TimeUtil.getCurrentTime());
     }
 
+    /**
+     * 返回浏览量
+     * 为了简化系统，需要替换成另一种记录方式
+     *
+     * @param type blog获取item
+     * @param id 对应的id
+     * @return 浏览量
+     */
     public static int getViewCount(String type, Integer id) {
-        Jedis jedis = null;
-        try {
-            jedis = RedisUtil.getJedis();
-            if (jedis.exists(type + "viewcount")) {
-                double count = jedis.zscore(type + "viewcount", "" + id);
-                return (int) count;
-            } else {
-                return 0;
-            }
-        } finally {
-            RedisUtil.returnResource(jedis);
-        }
+        return 0;
     }
 }
