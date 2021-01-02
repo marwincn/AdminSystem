@@ -43,19 +43,15 @@ public class Application {
      */
     @Bean
     public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", getCorsConfiguration()); // 对接口配置跨域设置
-        return new CorsFilter(source);
-    }
-
-    private CorsConfiguration getCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("*"); // 允许任何域名使用
         corsConfiguration.addAllowedHeader("*"); // 允许任何头
         corsConfiguration.addAllowedMethod("*"); // 允许任何方法
         corsConfiguration.setAllowCredentials(true); // 允许携带cookie
-        return corsConfiguration;
-    }
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration); // 对接口配置跨域设置
+        return new CorsFilter(source);
+    }
 }
 

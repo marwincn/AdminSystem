@@ -1,5 +1,7 @@
 package cn.marwin.adminsystem.util;
 
+import cn.marwin.adminsystem.entity.security.User;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class ViewUtil {
@@ -12,9 +14,10 @@ public class ViewUtil {
      * @param request 这次访问的request
      */
     public static void logView(String type, Integer id, HttpServletRequest request) {
-        int uid = 0;
-        if (UserUtil.getLoginUser() != null) {
-            uid = UserUtil.getLoginUser().getId();
+        int uid = -1;
+        User user = UserUtil.getLoginUser();
+        if (user != null) {
+            uid = user.getId();
         }
 
         String clientAddr;

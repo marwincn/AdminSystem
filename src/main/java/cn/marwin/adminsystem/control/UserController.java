@@ -1,11 +1,12 @@
 package cn.marwin.adminsystem.control;
 
 import cn.marwin.adminsystem.entity.security.User;
+import cn.marwin.adminsystem.facade.HttpResult;
+import cn.marwin.adminsystem.facade.UserFacade;
 import cn.marwin.adminsystem.service.security.UserService;
 import cn.marwin.adminsystem.util.FileUtil;
+import cn.marwin.adminsystem.util.JwtUtil;
 import cn.marwin.adminsystem.util.UserUtil;
-import cn.marwin.adminsystem.facade.UserFacade;
-import cn.marwin.adminsystem.facade.HttpResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
@@ -31,6 +34,48 @@ public class UserController {
             return new HttpResult(HttpResult.ERROR, e.getMessage());
         }
         return new HttpResult(HttpResult.SUCCESS, "注册成功！");
+    }
+
+    @ApiOperation(value = "登录账号")
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    public HttpResult login(String username, String password, HttpServletResponse response) {
+        try {
+            // 获取该用户的所有角色
+            User user = userService.findByUsername(username);
+            if (!password.equals(user.getPassword())) {
+                return new HttpResult(HttpResult.ERROR, "账号或密码错误");
+            }
+
+            String token = JwtUtil.createToken(username);
+            // 存储在cookie中就不用再更改前端的请求方法，后续还是要存储到header中让前端主动存储token
+            Cookie cookie = new Cookie("user-token", token);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+
+            return new HttpResult(HttpResult.SUCCESS, "登录成功！");
+        } catch (Exception e) {
+            return new HttpResult(HttpResult.ERROR, e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "登录账号")
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    public HttpResult logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("user-token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return new HttpResult(HttpResult.SUCCESS, "注销成功");
+    }
+
+    @ApiOperation(value = "获取当前登录用户信息")
+    @RequestMapping(value = "getLoginUser", method = RequestMethod.GET)
+    public HttpResult loginUser() {
+        User user = UserUtil.getLoginUser();
+        if (user == null) {
+            return new HttpResult(HttpResult.ERROR, "请先登陆！");
+        }
+        // 封装成门面类
+        return new HttpResult(HttpResult.SUCCESS, "获取当前登录用户信息成功", new UserFacade(user));
     }
 
     @ApiOperation(value = "修改基本信息")
@@ -103,17 +148,6 @@ public class UserController {
         } catch (Exception e) {
             return new HttpResult(HttpResult.ERROR, e.getMessage());
         }
-    }
-
-    @ApiOperation(value = "获取当前登录用户信息")
-    @RequestMapping(value = "getLoginUser", method = RequestMethod.GET)
-    public HttpResult loginUser() {
-        User user = UserUtil.getLoginUser();
-        if (user == null) {
-            return new HttpResult(HttpResult.ERROR, "请先登陆！");
-        }
-        // 封装成门面类
-        return new HttpResult(HttpResult.SUCCESS, "获取当前登录用户信息成功", new UserFacade(user));
     }
 
     @ApiOperation(value = "根据id查询用户信息")
